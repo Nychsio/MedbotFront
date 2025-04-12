@@ -1,0 +1,66 @@
+/* src/styles/App.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Roboto', 'Segoe UI', 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f9f9f9;
+    overflow-x: hidden; /* Zapobiega poziomemu przewijaniu */
+    width: 100vw; /* Upewnia się, że szerokość jest równa szerokości okna przeglądarki */
+  }
+  
+  .app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden; /* Zapobiega poziomemu przewijaniu */
+  }
+  
+  .container {
+    width: 100%;
+    max-width: 100%; /* Zmiana z 1200px na 100% */
+    margin: 0 auto;
+    padding: 0; /* Usunięcie paddingu */
+  }
+  
+  .main-content {
+    flex: 1;
+    width: 100%;
+    overflow-x: hidden; /* Zapobiega poziomemu przewijaniu */
+  }
+  
+  /* Utility classes */
+  .text-center {
+    text-align: center;
+  }
+  
+  .text-primary {
+    color: #0066cc;
+  }
+  
+  .bg-primary {
+    background-color: #0066cc;
+  }
+  
+  .text-white {
+    color: #ffffff;
+  }
+  
+  /* Responsive utilities */
+  @media (max-width: 768px) {
+    .hidden-mobile {
+      display: none;
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .hidden-desktop {
+      display: none;
+    }
+  }

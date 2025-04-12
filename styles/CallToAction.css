@@ -1,0 +1,51 @@
+/* styles/CallToAction.css */
+.cta-section {
+    background-color: #0066cc;
+    color: #ffffff;
+    padding: 70px 0;
+    text-align: center;
+    width: 100%;
+    display: block !important; /* Wymuszamy wyświetlanie */
+    position: relative; /* Dodajemy dla lepszego debugowania */
+    z-index: 5; /* Zapewniamy odpowiedni z-index */
+  }
+  
+  .cta-heading {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  
+  .cta-text {
+    font-size: 18px;
+    margin-bottom: 30px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .cta-button {
+    background-color: #ffffff;
+    color: #0066cc;
+    border: none;
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cta-button:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .cta-button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  }
