@@ -5,6 +5,7 @@ import "../styles/Chat.css";
 
 const Chat = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
   const [messages, setMessages] = useState([
     { id: 1, text: "Witamy w czacie LuxMed Lublin. W czym możemy pomóc?", sender: "bot", timestamp: new Date() }
   ]);
@@ -20,7 +21,39 @@ const Chat = () => {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
-  
+  useEffect(() => {
+    // Automatyczne pokazanie powitania przy pierwszym renderze
+    const timer = setTimeout(() => {
+      setShowWelcome(true);
+      
+      // Autoukrywanie wiadomości po 5 sekundach
+      const hideTimer = setTimeout(() => {
+        setShowWelcome(false);
+      }, 5000);
+      
+      return () => clearTimeout(hideTimer);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+  const welcomeText = window.innerWidth > 400 
+  ? "Hej, jestem Julia AI asystentem LuxMed! Masz jakieś pytanie?" 
+  : "Potrzebujesz pomocy? Kliknij tutaj!";
+  useEffect(() => {
+    if (isChatOpen) {
+      setShowWelcome(false); // Ukryj powitanie po otwarciu czatu
+      if (messages.length === 0) {
+        // Dodaj powitalną wiadomość w czacie
+        setMessages([{
+          id: 1,
+          text: "Hej, jestem wirtualnym asystentem LuxMed! Jak mogę Ci pomóc?",
+          sender: "bot",
+          timestamp: new Date()
+        }]);
+      }
+    }
+  }, [isChatOpen]);
+
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
     setError(null); // Resetujemy błędy przy zamknięciu/otwarciu czatu
@@ -63,39 +96,63 @@ const Chat = () => {
     } finally {
       setIsTyping(false);
     }
+    
   };
   
   const formatTime = (date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
   
+  
   return (
     <>
-      {/* Przycisk czatu */}
-      <button 
+    {/* Przycisk czatu */}
+    <button 
         className={`chat-button ${isChatOpen ? 'chat-button-hidden' : ''}`}
         onClick={toggleChat}
         aria-label="Otwórz czat"
+        onMouseEnter={() => setShowWelcome(true)}
+        onMouseLeave={() => setShowWelcome(false)}
       >
         💬
       </button>
       
+      {/* Wyskakująca wiadomość powitalna */}
+      {showWelcome && !isChatOpen && (
+        <div className="welcome-message">
+          Hej, jestem wirtualnym asystentem LuxMed! Masz jakieś pytanie?
+        </div>
+      )}
+
       {/* Okno czatu */}
       {isChatOpen && (
         <div className="chat-window">
-          <div className="chat-header">
-            <div className="chat-header-info">
-              <h3 className="chat-title">Czat z konsultantem</h3>
-              <span className="chat-status">Online</span>
-            </div>
-            <button 
-              className="chat-close-button" 
-              onClick={toggleChat}
-              aria-label="Zamknij czat"
-            >
-              ✕
-            </button>
-          </div>
+         <div className="chat-header">
+  <div className="consultant-avatar-container">
+    <div className="consultant-avatar">
+      <img 
+        src="/images/Julia.jpg" 
+        alt="Konsultant LuxMed" 
+      />
+    </div>
+  </div>
+  
+  <div className="chat-header-info">
+    <h3 className="chat-title">Julia AI</h3>
+    <span className="chat-status">
+      <span className="status-dot"></span>
+      Dostępna teraz
+    </span>
+  </div>
+  
+  <button 
+    className="chat-close-button" 
+    onClick={toggleChat}
+    aria-label="Zamknij czat"
+  >
+    ✕
+  </button>
+</div>
           
           <div className="chat-messages">
             {messages.map((message) => (

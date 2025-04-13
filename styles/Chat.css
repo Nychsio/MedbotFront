@@ -17,7 +17,77 @@
   transition: all 0.3s ease;
   z-index: 1000;
 }
+/* doklejone na szybko dla dużych erkanów bo przycisku nie witać*/
+@media (min-width: 1200px) {
+  .chat-button {
+    width: 90px;
+    height: 90px;
+    font-size: 30px;
+  }
+}
 
+/* Animacja powitania */
+@keyframes slideInMessage {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@media (max-width: 576px) {
+  .chat-button {
+    right: 15px;
+    bottom: 15px;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .welcome-message {
+    right: 70px;
+    bottom: 25px;
+    max-width: 200px;
+  }
+}
+.welcome-message::before {
+  content: '';
+  position: absolute;
+  right: -10px;
+  bottom: 15px;
+  width: 0;
+  height: 0;
+  border-left: 12px solid white;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+
+.welcome-message {
+  transform-origin: right bottom;
+  animation: slideInMessage 0.3s ease-out, pulseGentle 2s infinite;
+}
+
+@keyframes pulseGentle {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+.welcome-message {
+  position: fixed;
+  right: 150px; /* Zwiększona odległość od prawej krawędzi */
+  bottom: 40px;
+  background: white;
+  padding: 12px 16px;
+  border-radius: 18px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  max-width: 250px;
+  z-index: 1001;
+  animation: slideInMessage 0.5s ease-out;
+  font-size: 14px;
+}
+@media (max-width: 576px) {
+  .welcome-message {
+    right: 80px; /* Mniejszy margines na małych ekranach */
+    bottom: 25px;
+    max-width: 200px;
+  }
+}
 .chat-button:hover {
   transform: scale(1.1);
   background-color: #0055aa;
@@ -31,8 +101,8 @@
   position: fixed;
   right: 30px;
   bottom: 30px;
-  width: 350px;
-  height: 500px;
+  width: 500px;
+  height: 600px;
   background-color: #ffffff;
   border-radius: 15px;
   overflow: hidden;
@@ -41,6 +111,8 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   animation: slideIn 0.3s ease;
+  overflow: visible;
+  
 }
 
 @keyframes slideIn {
@@ -57,41 +129,94 @@
 .chat-header {
   background-color: #0066cc;
   color: white;
-  padding: 15px;
+  padding: 20px 20px 20px 50px; /* Więcej miejsca po lewej */
+  position: relative;
+  min-height: 80px;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
 .chat-header-info {
+  margin-left: 45px; /* Odstęp od zdjęcia */
+  flex-grow: 1;
+}
+.consultant-avatar-container {
+  position: absolute;
+  left: -30px; /* Wystaje poza kontener */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1001;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
+}
+.consultant-avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid white;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  background: #f8f8f8;
+  transition: all 0.3s ease;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease, box-shadow 0.3s ease;
+}
+.consultant-avatar:hover {
+  transform: scale(1.05) rotateY(10deg);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+.consultant-avatar img {
+  width: 100%;
+  height: 120%;
+  object-fit: cover;
+}
+.chat-title-wrapper {
   display: flex;
   flex-direction: column;
 }
-
 .chat-title {
-  font-size: 16px;
-  font-weight: 600;
   margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
-
 .chat-status {
-  font-size: 12px;
-  opacity: 0.8;
+  font-size: 13px;
+  opacity: 0.9;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+}
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #4caf50;
+  margin-right: 8px;
+  animation: pulse 1.5s infinite;
 }
 
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
 .chat-close-button {
   background: none;
   border: none;
   color: white;
+  font-size: 20px;
   cursor: pointer;
-  opacity: 0.8;
-  transition: opacity 0.3s ease;
+  margin-left: 15px;
+  transition: transform 0.3s ease;
 }
+
 
 .chat-close-button:hover {
-  opacity: 1;
+  transform: scale(1.2);
 }
-
 .chat-messages {
   flex: 1;
   padding: 15px;
@@ -243,9 +368,15 @@
     width: calc(100% - 20px);
     height: 70vh;
   }
-  
+  .consultant-avatar-container {
+    left: 10px; /* Na małych ekranach przestaje wystawać */
+    transform: translateY(-50%) scale(0.8);
+  }
   .chat-button {
     right: 10px;
     bottom: 10px;
+  }
+  .chat-header {
+    padding-left: 60px; /* Mniej miejsca na tekst */
   }
 }
