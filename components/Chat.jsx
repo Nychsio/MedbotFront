@@ -1,6 +1,7 @@
-// components/Chat.jsx
 import { useState, useEffect, useRef } from 'react';
 import { askQuestion } from '../utils/api.js';
+import useVoiceRecognition from '../hooks/useVoiceRecognition';
+import VoiceButton from './VoiceButton';
 import "../styles/Chat.css";
 
 const Chat = () => {
@@ -15,12 +16,33 @@ const Chat = () => {
   
   const messagesEndRef = useRef(null);
   
+  // Korzystamy z hooka rozpoznawania mowy
+  const { 
+    transcript, 
+    isListening, 
+    isSpeechSupported, 
+    error: voiceError, 
+    toggleListening, 
+    stopListening,
+    resetTranscript
+  } = useVoiceRecognition({
+    onTextChange: (text) => setNewMessage(text)
+  });
+  
+  // Obsługa błędu z rozpoznawania mowy
+  useEffect(() => {
+    if (voiceError) {
+      setError(voiceError);
+    }
+  }, [voiceError]);
+  
   // Automatyczne przewijanie do najnowszej wiadomości
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+  
   useEffect(() => {
     // Automatyczne pokazanie powitania przy pierwszym renderze
     const timer = setTimeout(() => {
@@ -36,9 +58,11 @@ const Chat = () => {
 
     return () => clearTimeout(timer);
   }, []);
+  
   const welcomeText = window.innerWidth > 400 
-  ? "Hej, jestem Julia AI asystentem LuxMed! Masz jakieś pytanie?" 
-  : "Potrzebujesz pomocy? Kliknij tutaj!";
+    ? "Hej, jestem Julia AI asystentem LuxMed! Masz jakieś pytanie?" 
+    : "Potrzebujesz pomocy? Kliknij tutaj!";
+  
   useEffect(() => {
     if (isChatOpen) {
       setShowWelcome(false); // Ukryj powitanie po otwarciu czatu
@@ -57,11 +81,21 @@ const Chat = () => {
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
     setError(null); // Resetujemy błędy przy zamknięciu/otwarciu czatu
+    
+    // Zatrzymujemy nasłuchiwanie głosu przy zamknięciu czatu
+    if (!isChatOpen === false && isListening) {
+      stopListening();
+    }
   };
   
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (newMessage.trim() === "" || isTyping) return;
+    
+    // Zatrzymaj nasłuchiwanie jeśli jest aktywne
+    if (isListening) {
+      stopListening();
+    }
     
     // Dodajemy wiadomość użytkownika
     const userMessage = {
@@ -74,6 +108,7 @@ const Chat = () => {
     setMessages(prev => [...prev, userMessage]);
     const questionText = newMessage.trim(); // Zapisujemy tekst pytania
     setNewMessage(""); // Czyścimy pole tekstowe
+    resetTranscript(); // Resetujemy transkrypcję
     setIsTyping(true); // Pokazujemy indykator ładowania
     setError(null); // Resetujemy błąd
     
@@ -96,25 +131,32 @@ const Chat = () => {
     } finally {
       setIsTyping(false);
     }
-    
   };
   
   const formatTime = (date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
   
-  
   return (
     <>
-    {/* Przycisk czatu */}
-    <button 
+      {/* Przycisk czatu ze zdjęciem Julii */}
+      <button 
         className={`chat-button ${isChatOpen ? 'chat-button-hidden' : ''}`}
         onClick={toggleChat}
         aria-label="Otwórz czat"
         onMouseEnter={() => setShowWelcome(true)}
         onMouseLeave={() => setShowWelcome(false)}
       >
-        💬
+        <div className="chat-button-avatar">
+          <div className="avatar-container"></div>
+          <img src="/images/Julia.webp" 
+            alt="Julia AI" 
+            style={{
+              opacity: '0.9', // Lekka przezroczystość zdjęcia
+              filter: 'contrast(1.1) brightness(1.05)' // Poprawa jakości zdjęcia
+            }}
+          />
+        </div>
       </button>
       
       {/* Wyskakująca wiadomość powitalna */}
@@ -127,65 +169,87 @@ const Chat = () => {
       {/* Okno czatu */}
       {isChatOpen && (
         <div className="chat-window">
-         <div className="chat-header">
-  <div className="consultant-avatar-container">
-    <div className="consultant-avatar">
-      <img 
-        src="/images/Julia.jpg" 
-        alt="Konsultant LuxMed" 
-      />
-    </div>
-  </div>
-  
-  <div className="chat-header-info">
-    <h3 className="chat-title">Julia AI</h3>
-    <span className="chat-status">
-      <span className="status-dot"></span>
-      Dostępna teraz
-    </span>
-  </div>
-  
-  <button 
-    className="chat-close-button" 
-    onClick={toggleChat}
-    aria-label="Zamknij czat"
-  >
-    ✕
-  </button>
-</div>
+          <div className="chat-header">
+            <div className="consultant-avatar-container">
+              <div className={`consultant-avatar ${isListening ? 'avatar-recording' : ''}`}>
+                <img 
+                  src="/images/Julia.webp" 
+                  alt="Konsultant LuxMed"
+                  style={{
+                    opacity: '0.9', // Lekka przezroczystość zdjęcia
+                    filter: 'contrast(1.1) brightness(1.05)' // Poprawa jakości zdjęcia
+                  }}
+                />
+              </div>
+            </div>
+            
+            <div className="chat-header-info">
+              <h3 className="chat-title">Julia AI</h3>
+              <span className={`chat-status ${isTyping ? 'thinking-status' : ''}`}>
+                <span className="status-dot"></span>
+                {isTyping ? 'Myśli...' : 'Dostępna teraz'}
+              </span>
+            </div>
+            
+            <button 
+              className="chat-close-button" 
+              onClick={toggleChat}
+              aria-label="Zamknij czat"
+            >
+              ✕
+            </button>
+          </div>
           
           <div className="chat-messages">
-            {messages.map((message) => (
-              <div 
-                key={message.id} 
-                className={`chat-message ${message.sender === 'user' ? 'user-message' : 'bot-message'}`}
-              >
-                <div className="message-content">
-                  {message.text}
+            <div className="messages-container">
+              {messages.map((message) => (
+                <div 
+                  key={message.id} 
+                  className={`chat-message ${message.sender === 'user' ? 'user-message' : 'bot-message'}`}
+                >
+                  <div className="message-content">
+                    {message.text}
+                  </div>
+                  <div className="message-timestamp">
+                    {formatTime(message.timestamp)}
+                  </div>
                 </div>
-                <div className="message-timestamp">
-                  {formatTime(message.timestamp)}
+              ))}
+              
+              {isTyping && (
+                <div className="chat-message bot-message">
+                  <div className="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
                 </div>
-              </div>
-            ))}
-            
-            {isTyping && (
-              <div className="chat-message bot-message">
-                <div className="typing-indicator">
-                  <span></span>
-                  <span></span>
-                  <span></span>
+              )}
+              
+              {error && (
+                <div className="chat-error">
+                  {error}
                 </div>
-              </div>
-            )}
+              )}
+              
+              <div ref={messagesEndRef} />
+            </div>
             
-            {error && (
-              <div className="chat-error">
-                {error}
+            {/* Absolutnie pozycjonowany przezroczysty disclaimer medyczny */}
+            <div className="medical-disclaimer-container">
+              <div className="medical-disclaimer">
+                Wyświetlane wiadomości nie stanowią porady medycznej. W razie problemów zdrowotnych skontaktuj się z lekarzem.
               </div>
-            )}
+            </div>
             
-            <div ref={messagesEndRef} />
+            {/* Kontener na fale dźwiękowe z płynnym zanikaniem */}
+            <div className={`sound-waves-container ${isListening ? 'waves-active' : 'waves-inactive'}`}>
+              <div className="sound-wave"></div>
+              <div className="sound-wave"></div>
+              <div className="sound-wave"></div>
+              <div className="sound-wave"></div>
+              <div className="sound-wave"></div>
+            </div>
           </div>
           
           <form onSubmit={handleSendMessage} className="chat-input-form">
@@ -193,10 +257,20 @@ const Chat = () => {
               type="text" 
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Wpisz wiadomość..." 
+              placeholder="Wpisz wiadomość lub kliknij mikrofon, aby mówić..." 
               className="chat-input"
               disabled={isTyping}
             />
+            
+            {/* Użycie komponentu przycisku mikrofonu */}
+            {isSpeechSupported && (
+              <VoiceButton 
+                isListening={isListening}
+                isDisabled={isTyping}
+                onClick={toggleListening}
+              />
+            )}
+            
             <button 
               type="submit" 
               className="chat-send-button"
