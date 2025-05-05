@@ -18,7 +18,7 @@ const VoiceButton = ({ isListening, isDisabled, onClick }) => {
       aria-label={isListening ? "Zatrzymaj nagrywanie" : "Zacznij nagrywać"}
       disabled={isDisabled}
     >
-      🎤
+      <span className="mic-icon">🎤</span>
       {isListening && <span className="listening-indicator">Słucham...</span>}
     </button>
   );

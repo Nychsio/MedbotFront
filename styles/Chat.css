@@ -148,18 +148,17 @@
 .chat-window {
   position: fixed;
   right: 30px;
-  bottom: 30px;
+  bottom: 0;
   width: 500px;
   height: 600px;
   background-color: #ffffff;
   border-radius: 15px;
-  overflow: hidden;
+  overflow: visible !important;
   display: flex;
   flex-direction: column;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   animation: slideIn 0.3s ease;
-  overflow: visible;
 }
 
 @keyframes slideIn {
@@ -173,10 +172,11 @@
   }
 }
 
+/* Nagłówek czatu */
 .chat-header {
-  background-color: #003882; /* Zmieniono na ciemnoniebieski */
+  background-color: #003882;
   color: white;
-  padding: 20px 20px 20px 50px;
+  padding: 15px 20px 15px 50px;
   position: relative;
   min-height: 80px;
   border-top-left-radius: 15px;
@@ -187,33 +187,62 @@
 
 .chat-header-info {
   margin-left: 45px;
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
+}
+
+/* Nowy układ tytułu i logo */
+.chat-title-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.chat-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Większe logo przesunięte w prawo */
+.luxmed-logo {
+  height: 40px;
+  margin-left: auto;
+  margin-right: -25px;
+  margin-top: 5px;
+  margin-bottom: -20px;
+  filter: drop-shadow(2px 2px 8px rgba(0, 0, 0, 1));
+  opacity: 1;
 }
 
 .consultant-avatar-container {
   position: absolute;
-  left: -30px;
+  left: -30px; /* Przesunięcie w lewo, aby awatar wystawał poza okno czatu */
   top: 50%;
   transform: translateY(-50%);
   z-index: 1001;
   filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
 }
 
-.consultant-avatar {
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 4px solid white;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  background: #f8f8f8;
-  transition: all 0.3s ease;
-  transform-style: preserve-3d;
-  transition: transform 0.5s ease, box-shadow 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+
+  .consultant-avatar {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background: #f8f8f8;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
 .consultant-avatar:hover {
   transform: scale(1.05) rotateY(10deg);
@@ -226,22 +255,10 @@
   object-fit: cover;
 }
 
-.chat-title-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
-.chat-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
 .chat-status {
   font-size: 13px;
   opacity: 0.9;
-  margin-top: 5px;
+  margin-top: 2px;
   display: flex;
   align-items: center;
 }
@@ -331,7 +348,7 @@
 }
 
 .user-message .message-content {
-  background-color: #003882; /* Zmieniono na ciemnoniebieski */
+  background-color: #003882;
   color: white;
   border-bottom-right-radius: 4px;
 }
@@ -386,33 +403,33 @@
   100% { opacity: 0.4; }
 }
 
-/* Całkowicie przezroczysty disclaimer medyczny */
+/* Przezroczysty disclaimer medyczny - poprawiony */
 .medical-disclaimer-container {
   position: absolute;
-  bottom: 10px; /* Niższa pozycja, bliżej pola wprowadzania */
+  bottom: 10px;
   left: 0;
   right: 0;
   z-index: 10;
   padding: 0;
-  pointer-events: none; /* Nadal pozwala na klikanie elementów pod nim */
+  pointer-events: none;
   text-align: center;
 }
 
 .medical-disclaimer {
-  color: rgba(51, 51, 51, 0.7); /* Bardziej widoczny tekst */
+  color: rgba(51, 51, 51, 0.7);
   font-size: 10px;
   text-align: center;
   padding: 4px 10px;
   font-style: italic;
   font-weight: 400;
   line-height: 1.2;
-  background-color: rgba(255, 255, 255, 0.7); /* Bardziej widoczne tło */
+  background-color: rgba(255, 255, 255, 0.7);
   display: inline-block;
   margin: 0 auto;
   border-radius: 10px;
   max-width: 95%;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Delikatny cień */
-  border: 1px solid rgba(221, 221, 221, 0.3); /* Delikatna ramka */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(221, 221, 221, 0.3);
 }
 
 .chat-input-form {
@@ -421,7 +438,7 @@
   padding: 10px;
   background-color: white;
   position: relative;
-  z-index: 1001;
+  z-index: 10;
 }
 
 .chat-input {
@@ -435,7 +452,7 @@
 }
 
 .chat-input:focus {
-  border-color: #003882; /* Zmieniono na ciemnoniebieski */
+  border-color: #003882;
 }
 
 /* Przycisk mikrofonu */
@@ -458,7 +475,7 @@
 
 /* Efekt aktywnego mikrofonu */
 .chat-mic-active {
-  background-color: #0066cc !important; /* Niebieskie tło */
+  background-color: #0066cc !important;
   color: white !important;
   box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.3);
 }
@@ -488,7 +505,7 @@
 }
 
 .chat-send-button {
-  background-color: #003882; /* Zmieniono na ciemnoniebieski */
+  background-color: #003882;
   color: white;
   border: none;
   width: 36px;
@@ -503,7 +520,7 @@
 }
 
 .chat-send-button:hover {
-  background-color: #00285e; /* Ciemniejsza wersja */
+  background-color: #00285e;
 }
 
 .chat-send-button:disabled {
@@ -511,67 +528,70 @@
   cursor: not-allowed;
 }
 
-/* Fale dźwiękowe jako kwadrat na dole */
+/* Naprawione fale dźwiękowe - mocniejsze i bardziej widoczne */
 .sound-waves-container {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 60px; /* Wysokość fal */
+  height: 100px; /* Wyższa wysokość dla lepszej widoczności */
   pointer-events: none;
   overflow: hidden;
-  z-index: 1;
-  transition: opacity 0.8s ease; /* Płynne przejście dla opacity */
+  z-index: 5;
 }
 
+/* Indywidualne fale */
 .sound-wave {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 60px;
-  background: linear-gradient(to top, 
-                rgba(0, 102, 204, 0.3) 0%, 
-                rgba(0, 102, 204, 0) 100%);
-  opacity: 0;
+  height: 100px;
+  background: linear-gradient(to top, rgba(0, 102, 204, 0.4) 0%, rgba(0, 102, 204, 0) 100%);
+  opacity: 0; /* Startuj od nieprzezroczystości 0 */
   transform: scaleY(0);
   transform-origin: bottom;
+  will-change: transform, opacity; /* Optymalizacja wydajności */
+}
+
+/* Konkretnie ustawiamy animacje dla każdej fali */
+.waves-active .sound-wave:nth-child(1) {
   animation: wave-animation-vertical 3s infinite;
-  pointer-events: none;
+  animation-delay: 0s;
 }
 
-.sound-wave:nth-child(2) {
+.waves-active .sound-wave:nth-child(2) {
+  animation: wave-animation-vertical 3s infinite;
   animation-delay: 0.5s;
-  background: linear-gradient(to top, 
-                rgba(0, 120, 230, 0.25) 0%, 
-                rgba(0, 120, 230, 0) 100%);
+  background: linear-gradient(to top, rgba(0, 120, 230, 0.35) 0%, rgba(0, 120, 230, 0) 100%);
 }
 
-.sound-wave:nth-child(3) {
+.waves-active .sound-wave:nth-child(3) {
+  animation: wave-animation-vertical 3s infinite;
   animation-delay: 1s;
-  background: linear-gradient(to top, 
-                rgba(0, 102, 204, 0.35) 0%, 
-                rgba(0, 102, 204, 0) 100%);
+  background: linear-gradient(to top, rgba(0, 102, 204, 0.45) 0%, rgba(0, 102, 204, 0) 100%);
 }
 
-.sound-wave:nth-child(4) {
+.waves-active .sound-wave:nth-child(4) {
+  animation: wave-animation-vertical 3s infinite;
   animation-delay: 1.5s;
-  background: linear-gradient(to top, 
-                rgba(0, 120, 230, 0.3) 0%, 
-                rgba(0, 120, 230, 0) 100%);
+  background: linear-gradient(to top, rgba(0, 120, 230, 0.4) 0%, rgba(0, 120, 230, 0) 100%);
 }
 
-.sound-wave:nth-child(5) {
+.waves-active .sound-wave:nth-child(5) {
+  animation: wave-animation-vertical 3s infinite;
   animation-delay: 2s;
-  background: linear-gradient(to top, 
-                rgba(0, 102, 204, 0.25) 0%, 
-                rgba(0, 102, 204, 0) 100%);
+  background: linear-gradient(to top, rgba(0, 102, 204, 0.35) 0%, rgba(0, 102, 204, 0) 100%);
 }
 
+/* Animacja fal - bardziej wyrazista */
 @keyframes wave-animation-vertical {
   0% {
-    opacity: 0.7;
+    opacity: 0.8;
     transform: scaleY(0);
+  }
+  80% {
+    opacity: 0.5;
   }
   100% {
     opacity: 0.3;
@@ -579,30 +599,28 @@
   }
 }
 
-/* Animacja jest widoczna tylko podczas aktywnego słuchania */
-.waves-active {
-  opacity: 1;
+/* Nieaktywne fale - wyraźny reset */
+.waves-inactive .sound-wave {
+  animation: none !important;
+  opacity: 0 !important;
+  transform: scaleY(0) !important;
 }
 
-.waves-inactive {
-  opacity: 0;
-}
-
-/* Podświetlenie awatara Julii podczas nagrywania */
+/* Mocniejszy efekt wokół awatara podczas nagrywania */
 .avatar-recording {
-  box-shadow: 0 0 15px rgba(231, 76, 60, 0.7);
-  animation: pulse-avatar 2s infinite;
+  box-shadow: 0 0 20px rgba(231, 76, 60, 0.8) !important;
+  animation: pulse-avatar 1.5s infinite !important;
 }
 
 @keyframes pulse-avatar {
   0% {
-    box-shadow: 0 0 15px rgba(231, 76, 60, 0.7);
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
   }
   50% {
-    box-shadow: 0 0 25px rgba(231, 76, 60, 0.9);
+    box-shadow: 0 0 30px rgba(231, 76, 60, 1);
   }
   100% {
-    box-shadow: 0 0 15px rgba(231, 76, 60, 0.7);
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
   }
 }
 
@@ -613,7 +631,7 @@
 }
 
 .thinking-status .status-dot {
-  background-color: #e74c3c; /* Czerwona kropka podczas myślenia */
+  background-color: #e74c3c;
 }
 
 @keyframes thinking-animation {
@@ -641,4 +659,16 @@
   .chat-header {
     padding-left: 60px;
   }
+  
+  .chat-title-container {
+    gap: 5px;
+  }
+  
+  .luxmed-logo {
+    height: 30px;
+  }
 }
+@media (max-width: 450px) {
+  .luxmed-logo {
+    display: none;
+  }
