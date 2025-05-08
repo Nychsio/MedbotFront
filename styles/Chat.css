@@ -1,241 +1,292 @@
 /* styles/Chat.css */
-.chat-button {
-  position: fixed;
-  right: 30px;
-  bottom: 30px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #003882 0%, #0066cc 100%);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 5px 15px rgba(0, 56, 130, 0.3);
-  transition: all 0.3s ease;
-  z-index: 1000;
-  padding: 0;
-  overflow: hidden;
-}
 
-.chat-button::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, #003882, #0066cc, #003882);
-  border-radius: 50%;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.chat-button:hover::before {
-  opacity: 1;
-  animation: spin 3s linear infinite;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.chat-button-avatar {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.chat-button-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-@media (min-width: 1200px) {
-  .chat-button {
-    width: 90px;
-    height: 90px;
-    font-size: 30px;
-  }
-}
-
-/* Animacja powitania */
-@keyframes slideInMessage {
-  0% { transform: translateY(20px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-
-@media (max-width: 576px) {
-  .chat-button, .chat-button::before, .avatar-container {
-    width: 60px;
-    height: 60px;
+/* ======================================
+   ZMIENNE CSS - dla łatwiejszego zarządzania kolorami
+   ====================================== */
+   :root {
+    --primary-color: #003882;
+    --primary-light: #0066cc;
+    --primary-dark: #00285e;
+    --white: #ffffff;
+    --light-gray: #f5f5f5;
+    --gray: #cccccc;
+    --dark-gray: #333333;
+    --border-color: #e0e0e0;
+    --error-bg: #ffeded;
+    --error-border: #f5c6cb;
+    --error-text: #721c24;
+    --success-color: #4caf50;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-medium: rgba(0, 0, 0, 0.2);
+    --shadow-dark: rgba(0, 0, 0, 0.3);
+    --primary-shadow: rgba(0, 56, 130, 0.3);
+    --primary-shadow-hover: rgba(0, 56, 130, 0.4);
   }
   
-  .welcome-message {
-    right: 70px;
-    bottom: 25px;
-    max-width: 200px;
+  /* ======================================
+     ANIMACJE
+     ====================================== */
+  @keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   }
-}
-
-.welcome-message::before {
-  content: '';
-  position: absolute;
-  right: -10px;
-  bottom: 15px;
-  width: 0;
-  height: 0;
-  border-left: 12px solid white;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
-}
-
-.welcome-message {
-  transform-origin: right bottom;
-  animation: slideInMessage 0.3s ease-out, pulseGentle 2s infinite;
-}
-
-@keyframes pulseGentle {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.02); }
-  100% { transform: scale(1); }
-}
-
-.welcome-message {
-  position: fixed;
-  right: 150px;
-  bottom: 40px;
-  background: white;
-  padding: 12px 16px;
-  border-radius: 18px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-  max-width: 250px;
-  z-index: 1001;
-  animation: slideInMessage 0.5s ease-out;
-  font-size: 14px;
-}
-
-@media (max-width: 576px) {
-  .welcome-message {
-    right: 80px;
-    bottom: 25px;
-    max-width: 200px;
+  
+  @keyframes slideInMessage {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
   }
-}
-
-.chat-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 8px 25px rgba(0, 56, 130, 0.4);
-}
-
-.chat-button-hidden {
-  display: none;
-}
-
-.chat-window {
-  position: fixed;
-  right: 30px;
-  bottom: 0;
-  width: 500px;
-  height: 600px;
-  background-color: #ffffff;
-  border-radius: 15px;
-  overflow: visible !important;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(20px);
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+  
+  @keyframes blink {
+    0% { opacity: 0.4; }
+    20% { opacity: 1; }
+    100% { opacity: 0.4; }
+  }
+  
+  @keyframes fadeInOut {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+  }
+  
+  @keyframes wave-animation-vertical {
+    0% {
+      opacity: 0.8;
+      transform: scaleY(0);
+    }
+    80% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0.3;
+      transform: scaleY(1);
+    }
+  }
+  
+  @keyframes pulse-avatar {
+    0% { box-shadow: 0 0 20px rgba(231, 76, 60, 0.8); }
+    50% { box-shadow: 0 0 30px rgba(231, 76, 60, 1); }
+    100% { box-shadow: 0 0 20px rgba(231, 76, 60, 0.8); }
+  }
+  
+  @keyframes thinking-animation {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+  }
+  
+  /* ======================================
+     PRZYCISK CHATU
+     ====================================== */
+  .chat-button {
+    display: flex !important;
+    position: fixed !important;
+    right: 30px !important;
+    bottom: 30px !important;
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    color: var(--white);
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 5px 15px var(--primary-shadow);
+    transition: all 0.3s ease;
+    z-index: 999 !important;
+    padding: 0;
+    overflow: hidden;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  .chat-button::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-light), var(--primary-color));
+    border-radius: 50%;
+    z-index: -1;
     opacity: 0;
+    transition: opacity 0.3s ease;
   }
-  to {
-    transform: translateY(0);
+  
+  .chat-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px var(--primary-shadow-hover);
+  }
+  
+  .chat-button:hover::before {
+    opacity: 1;
+    animation: spin 3s linear infinite;
+  }
+  
+  .chat-button-hidden {
+    display: none !important;
+  }
+  
+  .chat-button-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .chat-button-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* ======================================
+     WIADOMOŚĆ POWITALNA
+     ====================================== */
+  .welcome-message {
+    position: fixed;
+    right: 150px;
+    bottom: 40px;
+    background: var(--white);
+    padding: 12px 16px;
+    border-radius: 18px;
+    box-shadow: 0 4px 15px var(--shadow-light);
+    max-width: 250px;
+    z-index: 998;
+    animation: slideInMessage 0.5s ease-out;
+    font-size: 14px;
+    line-height: 1.4;
+    border: 1px solid var(--border-color);
+  }
+  
+  .welcome-message::before {
+    content: '';
+    position: absolute;
+    right: -10px;
+    bottom: 20px;
+    width: 0;
+    height: 0;
+    border-left: 12px solid var(--white);
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    filter: drop-shadow(2px 0 2px var(--shadow-light));
+  }
+  
+  /* ======================================
+     OKNO CHATU
+     ====================================== */
+  .chat-window {
+    position: fixed !important;
+    visibility: visible !important;
+    right: 30px;
+    bottom: 0;
+    width: 500px;
+    height: 600px;
+    background-color: var(--white);
+    border-radius: 15px;
+    overflow: visible !important;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px var(--shadow-medium);
+    z-index: 999 !important;
+    animation: slideIn 0.3s ease;
+  }
+  
+  /* ======================================
+     NAGŁÓWEK CHATU
+     ====================================== */
+  .chat-header {
+    background-color: var(--primary-color);
+    color: var(--white);
+    padding: 15px 20px 15px 50px;
+    position: relative;
+    min-height: 80px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .chat-header-info {
+    margin-left: 45px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  
+  .chat-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  
+  .chat-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  
+  .luxmed-logo {
+    height: 40px;
+    margin-left: auto;
+    margin-right: -25px;
+    margin-top: 5px;
+    margin-bottom: -20px;
+    filter: drop-shadow(2px 2px 8px rgba(0, 0, 0, 1));
     opacity: 1;
   }
-}
-
-/* Nagłówek czatu */
-.chat-header {
-  background-color: #003882;
-  color: white;
-  padding: 15px 20px 15px 50px;
-  position: relative;
-  min-height: 80px;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-  display: flex;
-  align-items: center;
-}
-
-.chat-header-info {
-  margin-left: 45px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-/* Nowy układ tytułu i logo */
-.chat-title-container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  margin-bottom: 5px;
-}
-
-.chat-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
-/* Większe logo przesunięte w prawo */
-.luxmed-logo {
-  height: 40px;
-  margin-left: auto;
-  margin-right: -25px;
-  margin-top: 5px;
-  margin-bottom: -20px;
-  filter: drop-shadow(2px 2px 8px rgba(0, 0, 0, 1));
-  opacity: 1;
-}
-
-.consultant-avatar-container {
-  position: absolute;
-  left: -30px; /* Przesunięcie w lewo, aby awatar wystawał poza okno czatu */
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1001;
-  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.2));
-}
-
-
+  
+  .chat-close-button {
+    background: none;
+    border: none;
+    color: var(--white);
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 15px;
+    transition: transform 0.3s ease;
+  }
+  
+  .chat-close-button:hover {
+    transform: scale(1.2);
+  }
+  
+  /* ======================================
+     AWATAR KONSULTANTA
+     ====================================== */
+  .consultant-avatar-container {
+    position: absolute;
+    left: -30px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1001;
+    filter: drop-shadow(0 3px 5px var(--shadow-medium));
+  }
+  
   .consultant-avatar {
     width: 90px;
     height: 90px;
     border-radius: 50%;
     overflow: hidden;
-    border: 4px solid white;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border: 4px solid var(--white);
+    box-shadow: 0 5px 15px var(--shadow-medium);
     background: #f8f8f8;
     transform-style: preserve-3d;
     transition: transform 0.5s ease, box-shadow 0.3s ease;
@@ -243,432 +294,443 @@
     align-items: center;
     justify-content: center;
   }
-
-.consultant-avatar:hover {
-  transform: scale(1.05) rotateY(10deg);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-}
-
-.consultant-avatar img {
-  width: 100%;
-  height: 120%;
-  object-fit: cover;
-}
-
-.chat-status {
-  font-size: 13px;
-  opacity: 0.9;
-  margin-top: 2px;
-  display: flex;
-  align-items: center;
-}
-
-.status-dot {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #4caf50;
-  margin-right: 8px;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
-}
-
-.chat-close-button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-  margin-left: 15px;
-  transition: transform 0.3s ease;
-}
-
-.chat-close-button:hover {
-  transform: scale(1.2);
-}
-
-/* Nowy kontener dla wiadomości */
-.chat-messages {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background-color: #f5f5f5;
-  position: relative;
-  overflow: hidden;
-}
-
-.messages-container {
-  flex: 1;
-  padding: 15px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.chat-message {
-  margin-bottom: 15px;
-  max-width: 80%;
-  display: flex;
-  flex-direction: column;
-}
-
-.user-message {
-  align-self: flex-end;
-  margin-left: auto;
-}
-
-.bot-message {
-  align-self: flex-start;
-  margin-right: auto;
-}
-
-.message-content {
-  padding: 10px 15px;
-  border-radius: 18px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  word-break: break-word;
-  white-space: pre-line;
-}
-
-.chat-error {
-  background-color: #ffeded;
-  border: 1px solid #f5c6cb;
-  color: #721c24;
-  padding: 10px 15px;
-  border-radius: 8px;
-  text-align: center;
-  margin: 10px 0;
-  font-size: 14px;
-}
-
-.user-message .message-content {
-  background-color: #003882;
-  color: white;
-  border-bottom-right-radius: 4px;
-}
-
-.bot-message .message-content {
-  background-color: white;
-  color: #333;
-  border-bottom-left-radius: 4px;
-}
-
-.message-timestamp {
-  font-size: 11px;
-  margin-top: 5px;
-  opacity: 0.7;
-  align-self: flex-end;
-}
-
-.bot-message .message-timestamp {
-  align-self: flex-start;
-}
-
-.typing-indicator {
-  display: flex;
-  align-items: center;
-  padding: 10px 15px;
-  background-color: white;
-  border-radius: 18px;
-  border-bottom-left-radius: 4px;
-}
-
-.typing-indicator span {
-  height: 8px;
-  width: 8px;
-  background-color: #bbb;
-  border-radius: 50%;
-  display: inline-block;
-  margin: 0 2px;
-  animation: blink 1.5s infinite;
-}
-
-.typing-indicator span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.typing-indicator span:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes blink {
-  0% { opacity: 0.4; }
-  20% { opacity: 1; }
-  100% { opacity: 0.4; }
-}
-
-/* Przezroczysty disclaimer medyczny - poprawiony */
-.medical-disclaimer-container {
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  padding: 0;
-  pointer-events: none;
-  text-align: center;
-}
-
-.medical-disclaimer {
-  color: rgba(51, 51, 51, 0.7);
-  font-size: 10px;
-  text-align: center;
-  padding: 4px 10px;
-  font-style: italic;
-  font-weight: 400;
-  line-height: 1.2;
-  background-color: rgba(255, 255, 255, 0.7);
-  display: inline-block;
-  margin: 0 auto;
-  border-radius: 10px;
-  max-width: 95%;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(221, 221, 221, 0.3);
-}
-
-.chat-input-form {
-  display: flex;
-  border-top: 1px solid #eee;
-  padding: 10px;
-  background-color: white;
-  position: relative;
-  z-index: 10;
-}
-
-.chat-input {
-  flex: 1;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  padding: 8px 15px;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.chat-input:focus {
-  border-color: #003882;
-}
-
-/* Przycisk mikrofonu */
-.chat-mic-button {
-  position: relative;
-  background-color: #003882;
-  color: white;
-  border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  margin-left: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  overflow: hidden;
-}
-
-/* Efekt aktywnego mikrofonu */
-.chat-mic-active {
-  background-color: #0066cc !important;
-  color: white !important;
-  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.3);
-}
-
-/* Wskaźnik słuchania przy przycisku mikrofonu */
-.listening-indicator {
-  position: absolute;
-  background-color: #003882;
-  color: white;
-  font-size: 12px;
-  padding: 3px 8px;
-  border-radius: 12px;
-  white-space: nowrap;
-  top: -25px;
-  left: 50%;
-  transform: translateX(-50%);
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  animation: fadeInOut 2s infinite;
-  pointer-events: none;
-  z-index: 10;
-}
-
-@keyframes fadeInOut {
-  0% { opacity: 0.7; }
-  50% { opacity: 1; }
-  100% { opacity: 0.7; }
-}
-
-.chat-send-button {
-  background-color: #003882;
-  color: white;
-  border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  margin-left: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.chat-send-button:hover {
-  background-color: #00285e;
-}
-
-.chat-send-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-}
-
-/* Naprawione fale dźwiękowe - mocniejsze i bardziej widoczne */
-.sound-waves-container {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px; /* Wyższa wysokość dla lepszej widoczności */
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 5;
-}
-
-/* Indywidualne fale */
-.sound-wave {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100px;
-  background: linear-gradient(to top, rgba(0, 102, 204, 0.4) 0%, rgba(0, 102, 204, 0) 100%);
-  opacity: 0; /* Startuj od nieprzezroczystości 0 */
-  transform: scaleY(0);
-  transform-origin: bottom;
-  will-change: transform, opacity; /* Optymalizacja wydajności */
-}
-
-/* Konkretnie ustawiamy animacje dla każdej fali */
-.waves-active .sound-wave:nth-child(1) {
-  animation: wave-animation-vertical 3s infinite;
-  animation-delay: 0s;
-}
-
-.waves-active .sound-wave:nth-child(2) {
-  animation: wave-animation-vertical 3s infinite;
-  animation-delay: 0.5s;
-  background: linear-gradient(to top, rgba(0, 120, 230, 0.35) 0%, rgba(0, 120, 230, 0) 100%);
-}
-
-.waves-active .sound-wave:nth-child(3) {
-  animation: wave-animation-vertical 3s infinite;
-  animation-delay: 1s;
-  background: linear-gradient(to top, rgba(0, 102, 204, 0.45) 0%, rgba(0, 102, 204, 0) 100%);
-}
-
-.waves-active .sound-wave:nth-child(4) {
-  animation: wave-animation-vertical 3s infinite;
-  animation-delay: 1.5s;
-  background: linear-gradient(to top, rgba(0, 120, 230, 0.4) 0%, rgba(0, 120, 230, 0) 100%);
-}
-
-.waves-active .sound-wave:nth-child(5) {
-  animation: wave-animation-vertical 3s infinite;
-  animation-delay: 2s;
-  background: linear-gradient(to top, rgba(0, 102, 204, 0.35) 0%, rgba(0, 102, 204, 0) 100%);
-}
-
-/* Animacja fal - bardziej wyrazista */
-@keyframes wave-animation-vertical {
-  0% {
-    opacity: 0.8;
+  
+  .consultant-avatar:hover {
+    transform: scale(1.05) rotateY(10deg);
+    box-shadow: 0 8px 20px var(--shadow-dark);
+  }
+  
+  .consultant-avatar img {
+    width: 100%;
+    height: 120%;
+    object-fit: cover;
+  }
+  
+  .avatar-recording {
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.8) !important;
+    animation: pulse-avatar 1.5s infinite !important;
+  }
+  
+  /* ======================================
+     STATUS CZATU
+     ====================================== */
+  .chat-status {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--success-color);
+    margin-right: 8px;
+    animation: pulse 1.5s infinite;
+  }
+  
+  .thinking-status {
+    font-style: italic;
+    animation: thinking-animation 1.5s infinite;
+  }
+  
+  .thinking-status .status-dot {
+    background-color: #e74c3c;
+  }
+  
+  /* ======================================
+     SEKCJA WIADOMOŚCI
+     ====================================== */
+  .chat-messages {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--light-gray);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .messages-container {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .chat-message {
+    margin-bottom: 15px;
+    max-width: 80%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .user-message {
+    align-self: flex-end;
+    margin-left: auto;
+  }
+  
+  .bot-message {
+    align-self: flex-start;
+    margin-right: auto;
+  }
+  
+  .message-content {
+    padding: 10px 15px;
+    border-radius: 18px;
+    box-shadow: 0 1px 2px var(--shadow-light);
+    word-break: break-word;
+    white-space: pre-line;
+  }
+  
+  .user-message .message-content {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-bottom-right-radius: 4px;
+  }
+  
+  .bot-message .message-content {
+    background-color: var(--white);
+    color: var(--dark-gray);
+    border-bottom-left-radius: 4px;
+  }
+  
+  .message-timestamp {
+    font-size: 11px;
+    margin-top: 5px;
+    opacity: 0.7;
+    align-self: flex-end;
+  }
+  
+  .bot-message .message-timestamp {
+    align-self: flex-start;
+  }
+  
+  .chat-error {
+    background-color: var(--error-bg);
+    border: 1px solid var(--error-border);
+    color: var(--error-text);
+    padding: 10px 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 10px 0;
+    font-size: 14px;
+  }
+  
+  /* ======================================
+     WSKAŹNIK PISANIA
+     ====================================== */
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: var(--white);
+    border-radius: 18px;
+    border-bottom-left-radius: 4px;
+  }
+  
+  .typing-indicator span {
+    height: 8px;
+    width: 8px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 2px;
+    animation: blink 1.5s infinite;
+  }
+  
+  .typing-indicator span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  .typing-indicator span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  
+  /* ======================================
+     ZASTRZEŻENIE MEDYCZNE
+     ====================================== */
+  .medical-disclaimer-container {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    padding: 0;
+    pointer-events: none;
+    text-align: center;
+  }
+  
+  .medical-disclaimer {
+    color: rgba(51, 51, 51, 0.7);
+    font-size: 10px;
+    text-align: center;
+    padding: 4px 10px;
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.2;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: inline-block;
+    margin: 0 auto;
+    border-radius: 10px;
+    max-width: 95%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(221, 221, 221, 0.3);
+  }
+  
+  /* ======================================
+     FORMULARZ WEJŚCIOWY CHATU
+     ====================================== */
+  .chat-input-form {
+    display: flex;
+    border-top: 1px solid #eee;
+    padding: 10px;
+    background-color: var(--white);
+    position: relative;
+    z-index: 10;
+  }
+  
+  .chat-input {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  .chat-input:focus {
+    border-color: var(--primary-color);
+  }
+  
+  /* ======================================
+     PRZYCISKI CHATU
+     ====================================== */
+  .chat-send-button {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .chat-send-button:hover {
+    background-color: var(--primary-dark);
+  }
+  
+  .chat-send-button:disabled {
+    background-color: var(--gray);
+    cursor: not-allowed;
+  }
+  
+  /* Przycisk mikrofonu */
+  .chat-mic-button {
+    position: relative;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+  
+  .chat-mic-active {
+    background-color: var(--primary-light) !important;
+    color: var(--white) !important;
+    box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.3);
+  }
+  
+  .listening-indicator {
+    position: absolute;
+    background-color: var(--primary-color);
+    color: var(--white);
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    white-space: nowrap;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 2px 5px var(--shadow-medium);
+    animation: fadeInOut 2s infinite;
+    pointer-events: none;
+    z-index: 10;
+  }
+  
+  /* ======================================
+     EFEKTY DŹWIĘKOWE
+     ====================================== */
+  .sound-waves-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 5;
+  }
+  
+  .sound-wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: linear-gradient(to top, rgba(0, 102, 204, 0.4) 0%, rgba(0, 102, 204, 0) 100%);
+    opacity: 0;
     transform: scaleY(0);
-  }
-  80% {
-    opacity: 0.5;
-  }
-  100% {
-    opacity: 0.3;
-    transform: scaleY(1);
-  }
-}
-
-/* Nieaktywne fale - wyraźny reset */
-.waves-inactive .sound-wave {
-  animation: none !important;
-  opacity: 0 !important;
-  transform: scaleY(0) !important;
-}
-
-/* Mocniejszy efekt wokół awatara podczas nagrywania */
-.avatar-recording {
-  box-shadow: 0 0 20px rgba(231, 76, 60, 0.8) !important;
-  animation: pulse-avatar 1.5s infinite !important;
-}
-
-@keyframes pulse-avatar {
-  0% {
-    box-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(231, 76, 60, 1);
-  }
-  100% {
-    box-shadow: 0 0 20px rgba(231, 76, 60, 0.8);
-  }
-}
-
-/* Styl dla statusu "Myśli..." */
-.thinking-status {
-  font-style: italic;
-  animation: thinking-animation 1.5s infinite;
-}
-
-.thinking-status .status-dot {
-  background-color: #e74c3c;
-}
-
-@keyframes thinking-animation {
-  0% { opacity: 0.7; }
-  50% { opacity: 1; }
-  100% { opacity: 0.7; }
-}
-
-/* Media Queries */
-@media (max-width: 576px) {
-  .chat-window {
-    right: 10px;
-    bottom: 10px;
-    width: calc(100% - 20px);
-    height: 70vh;
-  }
-  .consultant-avatar-container {
-    left: 10px;
-    transform: translateY(-50%) scale(0.8);
-  }
-  .chat-button {
-    right: 10px;
-    bottom: 10px;
-  }
-  .chat-header {
-    padding-left: 60px;
+    transform-origin: bottom;
+    will-change: transform, opacity;
   }
   
-  .chat-title-container {
-    gap: 5px;
+  .waves-active .sound-wave:nth-child(1) {
+    animation: wave-animation-vertical 3s infinite;
+    animation-delay: 0s;
   }
   
-  .luxmed-logo {
-    height: 30px;
+  .waves-active .sound-wave:nth-child(2) {
+    animation: wave-animation-vertical 3s infinite;
+    animation-delay: 0.5s;
+    background: linear-gradient(to top, rgba(0, 120, 230, 0.35) 0%, rgba(0, 120, 230, 0) 100%);
   }
-}
-@media (max-width: 450px) {
-  .luxmed-logo {
-    display: none;
+  
+  .waves-active .sound-wave:nth-child(3) {
+    animation: wave-animation-vertical 3s infinite;
+    animation-delay: 1s;
+    background: linear-gradient(to top, rgba(0, 102, 204, 0.45) 0%, rgba(0, 102, 204, 0) 100%);
+  }
+  
+  .waves-active .sound-wave:nth-child(4) {
+    animation: wave-animation-vertical 3s infinite;
+    animation-delay: 1.5s;
+    background: linear-gradient(to top, rgba(0, 120, 230, 0.4) 0%, rgba(0, 120, 230, 0) 100%);
+  }
+  
+  .waves-active .sound-wave:nth-child(5) {
+    animation: wave-animation-vertical 3s infinite;
+    animation-delay: 2s;
+    background: linear-gradient(to top, rgba(0, 102, 204, 0.35) 0%, rgba(0, 102, 204, 0) 100%);
+  }
+  
+  .waves-inactive .sound-wave {
+    animation: none !important;
+    opacity: 0 !important;
+    transform: scaleY(0) !important;
+  }
+  
+  /* ======================================
+     MEDIA QUERIES
+     ====================================== */
+  @media (min-width: 1200px) {
+    .chat-button {
+      width: 90px;
+      height: 90px;
+      font-size: 30px;
+    }
+  }
+  
+  /* Korekta pozycji wiadomości powitalnej tylko dla problematycznego przedziału */
+  @media (min-width: 630px) and (max-width: 1200px) {
+    .welcome-message {
+      right: 120px; /* Delikatnie zwiększona odległość od przycisku */
+    }
+  }
+  
+  /* Przywrócenie oryginalnych ustawień dla małych ekranów */
+  @media (max-width: 629px) {
+    .welcome-message {
+      right: 25%; /* Oryginalna wartość */
+      bottom: 25px;
+      max-width: 200px;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .chat-window {
+      right: 0 !important;
+      left: 0 !important;
+      bottom: 0 !important;
+      width: 100% !important;
+      height: 80vh !important;
+    }
+    
+    .consultant-avatar-container {
+      left: 15px;
+      transform: translateY(-50%) scale(0.8);
+    }
+    
+    .chat-button, .chat-button::before, .avatar-container {
+      width: 60px;
+      height: 60px;
+    }
+    
+    .chat-button {
+      right: 10px;
+      bottom: 10px;
+    }
+    
+    .chat-header {
+      padding-left: 60px;
+    }
+    
+    .chat-title-container {
+      gap: 5px;
+    }
+    
+    .luxmed-logo {
+      height: 30px;
+    }
+    
+    /* Ukrywamy wiadomość, gdy menu jest otwarte */
+    body.menu-open .welcome-message {
+      display: none !important;
+    }
+  }
+  
+  @media (max-width: 450px) {
+    .luxmed-logo {
+      display: none;
+    }
+  }
+  
+  @media (max-width: 360px) {
+    .welcome-message {
+      right: 65px;
+      bottom: 25px;
+      max-width: 180px;
+      font-size: 12px;
+      padding: 8px 12px;
+    }
+  }
+  
+  /* Obsługa małych ekranów - wiadomość nad przyciskiem */
+  @media (max-height: 550px) {
+    .welcome-message {
+      bottom: auto;
+      top: 50%;
+      right: 80px;
+    }
+    
+    .welcome-message::before {
+      bottom: 15px;
+    }
   }

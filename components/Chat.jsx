@@ -34,6 +34,7 @@ const Chat = () => {
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
   const silenceTimeoutRef = useRef(null); // Timer dla wykrywania ciszy
+  const welcomeShown = useRef(false); // Ref dla wiadomości powitalnej
   
   // Stała definiująca czas ciszy w milisekundach przed zatrzymaniem nagrywania
   const SILENCE_TIMEOUT = 2000; // 2 sekundy ciszy = zatrzymanie nagrywania
@@ -180,19 +181,37 @@ const Chat = () => {
   }, [messages]);
   
   useEffect(() => {
-    // Automatyczne pokazanie powitania przy pierwszym renderze
-    const timer = setTimeout(() => {
-      setShowWelcome(true);
-      
-      // Autoukrywanie wiadomości po 5 sekundach
-      const hideTimer = setTimeout(() => {
+    // Funkcja sprawdzająca, czy mamy wystarczająco miejsca na wiadomość powitalną
+    const checkScreenSpace = () => {
+      // Nie pokazujemy powitania na bardzo małych ekranach lub gdy menu jest otwarte
+      if (window.innerWidth < 320 || document.body.classList.contains('menu-open')) {
         setShowWelcome(false);
-      }, 5000);
-      
-      return () => clearTimeout(hideTimer);
-    }, 1000);
+        return;
+      }
 
-    return () => clearTimeout(timer);
+      // Automatyczne pokazanie powitania przy pierwszym renderze
+      if (!welcomeShown.current) {
+        setShowWelcome(true);
+        welcomeShown.current = true;
+
+        // Autoukrywanie wiadomości po 5 sekundach
+        const hideTimer = setTimeout(() => {
+          setShowWelcome(false);
+        }, 5000);
+
+        return () => clearTimeout(hideTimer);
+      }
+    };
+
+    const timer = setTimeout(checkScreenSpace, 1000);
+
+    // Sprawdzaj również przy zmianie rozmiaru okna
+    window.addEventListener('resize', checkScreenSpace);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', checkScreenSpace);
+    };
   }, []);
   
   // Efekt obsługujący zmianę stanu słuchania
@@ -359,7 +378,9 @@ const Chat = () => {
       {/* Wyskakująca wiadomość powitalna */}
       {showWelcome && !isChatOpen && (
         <div className="welcome-message">
-          Hej, jestem wirtualnym asystentem LuxMed! Masz jakieś pytanie?
+          {window.innerWidth > 400 
+            ? "Hej, jestem wirtualnym asystentem LuxMed! Masz jakieś pytanie?" 
+            : "Potrzebujesz pomocy? Kliknij tutaj!"}
         </div>
       )}
 

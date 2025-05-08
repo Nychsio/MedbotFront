@@ -1,5 +1,5 @@
-// src/App.jsx
-import { useState } from 'react';
+// src/App.jsx - Z funkcją zapewniającą widoczność chatbota
+import { useState, useEffect } from 'react';
 import Header from '../components/Header.jsx';
 import Footer from '../components/Footer.jsx';
 import Carousel from '../components/Carousel.jsx';
@@ -40,21 +40,55 @@ const App = () => {
     { name: "Rehabilitacja", icon: "🤸", description: "Nowoczesne metody rehabilitacji" }
   ];
 
-  // Debug
-  console.log("Services data:", services);
+  // Efekt, który zapewnia widoczność chatbota zawsze
+  useEffect(() => {
+    // Funkcja zapewniająca widoczność chatbota
+    const ensureChatbotVisibility = () => {
+      // Sprawdzanie czy przycisk chatbota istnieje
+      const chatButton = document.querySelector('.chat-button');
+      if (chatButton) {
+        // Reset stylów ukrywających chatbota
+        chatButton.style.display = 'flex';
+        chatButton.style.visibility = 'visible';
+        chatButton.style.opacity = '1';
+        chatButton.style.position = 'fixed';
+        chatButton.style.zIndex = '9999';
+        
+        // Tylko jeśli chatbot jest ukryty, to usuń klasę .chat-button-hidden
+        if (chatButton.classList.contains('chat-button-hidden') && 
+            !document.querySelector('.chat-window')) {
+          chatButton.classList.remove('chat-button-hidden');
+        }
+      }
+    };
+
+    // Wykonaj funkcję po załadowaniu strony
+    ensureChatbotVisibility();
+
+    // Wykonaj funkcję po każdej zmianie rozmiaru okna
+    window.addEventListener('resize', ensureChatbotVisibility);
+
+    // Wykonaj funkcję co 500ms przez pierwsze 5 sekund
+    const intervalId = setInterval(ensureChatbotVisibility, 500);
+    setTimeout(() => clearInterval(intervalId), 5000);
+
+    // Czyszczenie przy odmontowaniu komponentu
+    return () => {
+      window.removeEventListener('resize', ensureChatbotVisibility);
+      clearInterval(intervalId);
+    };
+  }, []);
 
   return (
     <div className="app">
       <Header />
       <main className="main-content">
         <Carousel slides={slides} />
-        {/* Początek sekcji usług */}
         <Services services={services} />
-        {/* Koniec sekcji usług */}
         <CallToAction />
       </main>
       <Footer />
-      <Chat />
+      <Chat /> {/* Chatbot jest renderowany na najwyższym poziomie, co jest ważne */}
     </div>
   );
 };

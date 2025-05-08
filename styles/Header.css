@@ -1,186 +1,428 @@
-.mobile-nav-link:hover {
-    color: #0066cc;
-    background-color: #f8f9fa; /* Dodajemy tło przy najechaniu */
-    border-radius: 4px;
-  }.header .container {
-    max-width: 1200px; /* Ograniczamy maksymalną szerokość */
-    margin: 0 auto; /* Centrujemy kontener */
-    padding: 0 20px; /* Dodajemy padding z boków */
-  }.logo-main {
-    color: #0066cc;
-    font-size: 24px;
-    font-weight: 700;
-    margin-right: 4px;
-  }
-  
-  .logo-sub {
-    color: #3399ff;
-    font-size: 18px;
-    font-weight: 500;
-  }/* src/styles/Header.css */
-  .header {
-    background-color: #ffffff;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    width: 100%;
-  }
-  
-  .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-    margin: 0 auto; /* Centrujemy zawartość */
-    max-width: 100%; /* Zapewniamy, że nie wyjdzie poza kontener */
-    position: relative; /* Dla pozycjonowania potomków */
-  }
-  
-  .logo {
-    display: flex;
-    align-items: baseline;
-    flex-shrink: 0; /* Zapobiegamy kurczeniu się logo */
-    margin-right: 20px; /* Dodajemy odstęp po prawej stronie logo */
-  }
-  
-  /* Umieszczamy menu na środku */
-  .desktop-nav {
-    flex-grow: 1;
+/* Header.css - poprawiona wersja z ikoną SVG dla przycisku hamburger */
+.header {
+  width: 100%;
+  z-index: 900;
+  border-bottom: 1px solid #eaeaea;
+  background-color: #fff;
+}
+
+/* Top bar - pasek z linkami Dla Pacjenta, Dla Lekarza itd. */
+.top-bar {
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #eaeaea;
+  font-size: 14px;
+}
+
+.top-bar-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 15px;
+}
+
+.user-links {
+  display: flex;
+  gap: 20px;
+}
+
+.user-link {
+  color: #333;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.user-link:hover {
+  color: #0066cc;
+}
+
+/* Ikony w kółkach */
+.circle-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 5px;
+  font-size: 12px;
+}
+
+.blue-circle {
+  background-color: #0066cc;
+  color: white;
+}
+
+.red-circle {
+  background-color: #d2293d;
+  color: white;
+}
+
+.account-link .my-account-button {
+  background-color: #d2293d; /* Kolor czerwony LuxMed */
+  color: white;
+  padding: 6px 15px;
+  border-radius: 4px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.account-link .my-account-button:hover {
+  background-color: #b61750;
+}
+
+.account-icon {
+  margin-right: 5px;
+  font-size: 12px;
+  color: white;
+}
+
+/* Main header - logo i menu nawigacyjne */
+.main-header {
+  padding: 15px 0;
+}
+
+.main-header-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 15px;
+  position: relative;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
+.logo-image {
+  height: 50px;
+  width: auto;
+}
+
+/* Menu nawigacyjne */
+.main-nav {
+  flex-grow: 1;
+  padding-left: 20px;
+}
+
+.nav-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  margin: 0 10px;
+  position: relative;
+}
+
+.nav-link {
+  color: #333;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 15px;
+  padding: 10px 5px;
+  display: flex;
+  align-items: center;
+}
+
+.nav-link:hover {
+  color: #0066cc;
+}
+
+.home-icon-blue {
+  color: #0066cc;
+  font-size: 16px;
+  margin-right: 5px;
+}
+
+.dropdown-arrow {
+  font-size: 10px;
+  margin-left: 4px;
+  color: #888;
+}
+
+/* Elementy widoczne tylko w wersji mobilnej */
+.mobile-only {
+  display: none;
+}
+
+/* Ikona wyszukiwania */
+.search-button {
+  margin-left: 20px;
+}
+
+.search-button button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #333;
+  padding: 5px;
+}
+
+.search-button button:hover {
+  color: #0066cc;
+}
+
+.search-icon {
+  font-size: 16px;
+}
+
+/* Mobile menu button - Z IKONĄ SVG */
+.mobile-menu-button {
+  display: none; /* Domyślnie ukryte, pokaże się tylko w widoku mobilnym */
+  box-shadow: none !important; /* Remove any shadow */
+  cursor: pointer;
+  z-index: 99999 !important;
+  padding: 5px;
+  margin-left: 10px;
+}
+
+/* Ikona hamburger menu */
+.hamburger-icon {
+  width: 32px;
+  height: 32px;
+  display: block;
+}
+
+/* Overlay dla menu mobilnego */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  z-index: 2000 !important; /* Wysoki z-index dla overlaya */
+  display: none;
+}
+
+.mobile-menu-overlay.active {
+  display: block;
+}
+
+/* Responsywność */
+@media (max-width: 992px) {
+  /* Ukrycie górnej sekcji w widoku mobilnym */
+  .top-bar {
     display: none;
   }
   
-  /* Umieszczamy przycisk menu na prawej stronie */
-  .mobile-menu-toggle {
-    flex-shrink: 0;
-    margin-left: auto;
+  .main-nav {
+    position: fixed;
+    top: 0;
+    left: 0; /* Menu z lewej strony */
+    width: 80%;
+    max-width: 320px;
+    height: 100vh;
+    background: white;
+    padding: 60px 20px 20px; /* Przesunięto zawartość trochę wyżej */
+    transform: translateX(-100%); /* Początkowo schowane z lewej */
+    transition: transform 0.3s ease;
+    z-index: 3000 !important; /* Super wysoki z-index - wyższy niż overlay i chatbot */
+    overflow-y: auto;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    display: block;
   }
   
-  /* Styl dla rozwijanego menu */
-  .mobile-nav {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    background-color: #ffffff;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    padding: 0;
+  .main-nav.active {
+    transform: translateX(0);
   }
   
-  .logo {
-    display: flex;
-    align-items: baseline;
-    margin-right: 20px;
+  .nav-list {
+    flex-direction: column;
   }
   
-  .nav-items {
-    display: flex;
-    list-style: none;
+  .nav-item {
     margin: 0;
-    padding: 0;
+    padding: 12px 0;
+    border-bottom: 1px solid #eaeaea;
   }
   
   .nav-link {
-    color: #333;
-    text-decoration: none;
-    margin-left: 20px; /* Zmniejszono odstęp między elementami menu */
-    font-weight: 500;
-    transition: color 0.3s ease;
-    position: relative;
-    white-space: nowrap;
-  }
-  
-  .nav-link:hover {
-    color: #0066cc;
-  }
-  
-  .nav-link::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -5px;
-    left: 0;
-    background-color: #0066cc;
-    transition: width 0.3s ease;
-  }
-  
-  .nav-link:hover::after {
-    width: 100%;
-  }
-  
-  .mobile-menu-toggle {
-    display: block; /* Zawsze pokazujemy przycisk menu mobilnego */
-    margin-left: auto; /* Przesuwamy przycisk na prawą stronę */
-    margin-right: 10px; /* Dodajemy margines z prawej */
-  }
-  
-  .menu-button {
-    background: none;
-    border: none;
     font-size: 16px;
-    cursor: pointer;
-    color: #333;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    white-space: nowrap; /* Zapobiegamy zawijaniu tekstu */
+    padding: 5px 0;
   }
   
-  .mobile-nav {
-    background-color: #ffffff;
-    padding: 10px 20px; /* Zwiększamy padding z boków */
-    border-top: 1px solid #eee;
-    width: 100%;
-    box-sizing: border-box;
+  .dropdown .nav-link {
+    display: flex;
+    justify-content: space-between;
   }
   
-  .mobile-nav-items {
-    list-style: none;
-    padding-left: 0;
-    padding-right: 20px; /* Dodajemy padding z prawej */
+  .search-button {
+    display: none;
   }
   
-  .mobile-nav-link {
+  /* KLUCZOWA POPRAWA: Wyraźne pokazanie przycisku menu w wersji mobilnej */
+  .mobile-menu-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .mobile-only {
     display: block;
-    padding: 12px 10px 12px 0; /* Zwiększamy padding z lewej i prawej */
-    color: #333;
-    text-decoration: none;
-    border-bottom: 1px solid #eee;
-    font-weight: 500;
-    margin-right: 40px; /* Zwiększamy margines z prawej strony */
+  }
+}
+
+@media (max-width: 768px) {
+  .main-header-container {
+    padding: 0 10px;
   }
   
-  /* Media Queries */
-  @media (min-width: 769px) {
-    .desktop-nav {
-      display: block;
-    }
-    
-    /* Zmieniamy, aby przycisk menu był zawsze widoczny */
-    .mobile-menu-toggle {
-      display: block;
-    }
-    
-    /* Dostosowanie odstępów menu dla większych ekranów */
-    .nav-link {
-      margin-left: 40px; /* Zwiększamy odstęp między elementami menu */
-    }
+  .logo-image {
+    height: 40px;
   }
   
-  @media (min-width: 1201px) {
-    .nav-link {
-      margin-left: 50px; /* Jeszcze większy odstęp na bardzo dużych ekranach */
-    }
+  /* Zwiększenie widoczności ikony na małych ekranach */
+  .hamburger-icon {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* Stany po przewinięciu */
+.header.scrolled .top-bar {
+  display: none;
+}
+
+.header.scrolled .main-header {
+  padding: 10px 0;
+}
+
+.header.scrolled .logo-image {
+  height: 40px;
+}
+
+/* Element Chatbot AI w menu mobilnym */
+.chatbot-item {
+  border-top: 2px solid #f0f0f0;
+  margin-top: 15px;
+  padding-top: 15px;
+}
+
+.chatbot-item .nav-link {
+  color: #0066cc;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+.chatbot-icon {
+  color: #0066cc;
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* KLUCZOWA ZMIANA: To ukrywa chatbota gdy menu jest otwarte */
+body.menu-open .chat-button,
+body.menu-open .chat-window,
+body.menu-open .welcome-message {
+  display: none !important; /* Całkowite ukrycie zamiast przyciemnienia */
+}
+
+.user-link,
+.my-account-button,
+.nav-link {
+  cursor: default; /* Zwykły kursor zamiast wskaźnika */
+}
+
+/* Styl dla logo bez funkcji linku */
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+/* Tylko dla Chatbot AI zostawiamy kursor wskaźnika */
+.chatbot-item .nav-link {
+  cursor: pointer !important;
+}
+
+/* Style dla ikon SVG */
+.icon {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+/* Kontener dla ikon w kółkach */
+.circle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+/* Ikona w przycisku Moje konto */
+.account-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 5px;
+}
+
+/* Ikona domu w menu */
+.home-icon-blue {
+  width: 24px;
+  height: 18px;
+}
+
+/* Strzałki rozwijane w menu */
+.dropdown-arrow {
+  width: 12px;
+  height: 12px;
+  margin-left: 4px;
+}
+
+/* Ikona wyszukiwania */
+.search-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Ikona chatbota w menu mobilnym */
+.chatbot-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+/* Dodanie przestrzeni dla ikon w elementach menu */
+.nav-link {
+  display: flex;
+  align-items: center;
+}
+
+/* Style dla responsywności - zapewniamy, że ikony mają odpowiednią wielkość na urządzeniach mobilnych */
+@media (max-width: 768px) {
+  .icon,
+  .home-icon-blue,
+  .dropdown-arrow,
+  .account-icon {
+    width: 14px;
+    height: 14px;
   }
   
-  @media (max-width: 768px) {
-    .header-content {
-      padding: 15px 0;
-    }
-    
-    .mobile-nav-link {
-      padding: 10px 0;
-    }
+  .search-icon,
+  .chatbot-icon {
+    width: 16px;
+    height: 16px;
   }
+  
+  .circle-icon {
+    width: 18px;
+    height: 18px;
+  }
+}
