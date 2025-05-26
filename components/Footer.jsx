@@ -30,6 +30,62 @@ const Footer = () => {
               <li><a href="#" className="footer-link">FAQ</a></li>
             </ul>
           </div>
+
+          <div className="footer-column">
+            <h3 className="footer-heading">Autorzy projektu</h3>
+            <div className="authors-grid">
+              <div className="author-card">
+                <div className="author-image">
+                  <img src="/images/author1.jpg" alt="Jan Kowalski" />
+                </div>
+                <div className="author-info">
+                  <h4 className="author-name">Karol Kowal</h4>
+                  <a 
+                    href="https://www.linkedin.com/in/kowal-karol/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app&fbclid=IwZXh0bgNhZW0CMTAAYnJpZBExUDdVaGkydHVOQ0lJbm15bwEezi7WxmDBErv5FwOhPVZTPNhKvMD8wFoiZVuvvXbGWlKm0O8hE-IdriBHLhY_aem_joYQE4M8OoN8BllZFZGz0Q" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="linkedin-link"
+                  >
+                    <span className="linkedin-icon">💼</span> LinkedIn
+                  </a>
+                </div>
+              </div>
+
+              <div className="author-card">
+                <div className="author-image">
+                  <img src="/images/author2.jpg" alt="Piotr Niemiec" />
+                </div>
+                <div className="author-info">
+                  <h4 className="author-name">Piotr Niemiec</h4>
+                  <a 
+                    href="https://www.linkedin.com/in/piotrniemiec/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="linkedin-link"
+                  >
+                    <span className="linkedin-icon">💼</span> LinkedIn
+                  </a>
+                </div>
+              </div>
+
+              <div className="author-card">
+                <div className="author-image">
+                  <img src="/images/author3.jpg" alt="Piotr Wiśniewski" />
+                </div>
+                <div className="author-info">
+                  <h4 className="author-name">Damian Cybula</h4>
+                  <a 
+                    href="https://www.linkedin.com/in/damian-cybula/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="linkedin-link"
+                  >
+                    <span className="linkedin-icon">💼</span> LinkedIn
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         
         <div className="copyright">

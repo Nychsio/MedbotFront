@@ -482,7 +482,7 @@
   }
   
   /* ======================================
-     FORMULARZ WEJŚCIOWY CHATU
+     FORMULARZ WEJŚCIOWY CHATU - MODYFIKACJA DO AUTO-RESIZE
      ====================================== */
   .chat-input-form {
     display: flex;
@@ -491,20 +491,37 @@
     background-color: var(--white);
     position: relative;
     z-index: 10;
+    align-items: flex-end; /* Wyrównuje przyciski do dołu */
   }
   
-  .chat-input {
+  .chat-input-textarea {
     flex: 1;
-    border: 1px solid #ddd;
-    border-radius: 20px;
+    border: 2px solid #0345d3;
+    border-radius: 15px;
     padding: 8px 15px;
+    color: white;           /* Kolor tekstu */
+    background-color: smokeywhite; /* Kolor tła */
     font-size: 14px;
     outline: none;
-    transition: border-color 0.3s ease;
+    transition: all 0.5s ease-in-out;
+    resize: none; /* Wyłączamy manualne resizing */
+    overflow: hidden; /* Ukrywamy scrollbar */
+    height: 36px; /* Początkowa wysokość zgodna z przyciskami */
+    max-height: 120px; /* Maksymalna wysokość */
+    line-height: 20px; /* Stała wysokość linii - ważne dla obliczeń */
+    font-family: inherit; /* Dziedziczy czcionkę z rodzica */
   }
   
-  .chat-input:focus {
+  .chat-input-textarea:focus {
     border-color: var(--primary-color);
+    zoom: 1.05;
+   
+  }
+  
+  /* Zachowaj spójność stylów z istniejącymi przyciskami */
+  .chat-send-button, .chat-mic-button {
+    align-self: flex-end; /* Przyciski trzymamy na dole */
+    min-height: 36px; /* Minimum takie jak chat-input */
   }
   
   /* ======================================

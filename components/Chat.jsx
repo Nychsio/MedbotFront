@@ -2,7 +2,51 @@ import { useState, useEffect, useRef } from 'react';
 import { askQuestion } from '../utils/api.js';
 import "../styles/Chat.css";
 
-// Możesz użyć tego komponentu bezpośrednio lub zaimportować VoiceButton z osobnego pliku
+// AutoResizeTextarea: automatycznie dostosowuje wysokość i obsługuje Enter/Shift+Enter
+const AutoResizeTextarea = ({ value, onChange, placeholder, disabled, onEnter }) => {
+  const textareaRef = useRef(null);
+
+  // Funkcja dostosowująca wysokość
+  const adjustHeight = () => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    textarea.style.height = '36px'; // reset wysokości
+    const newHeight = Math.min(textarea.scrollHeight, 120); // max 120px
+    textarea.style.height = `${newHeight}px`;
+  };
+
+  useEffect(() => {
+    adjustHeight();
+  }, [value]);
+
+  const handleChange = (e) => {
+    onChange(e);
+    // adjustHeight wywoła się automatycznie w useEffect
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      if (onEnter) onEnter(e);
+    }
+  };
+
+  return (
+    <textarea
+      ref={textareaRef}
+      className="chat-input-textarea"
+      value={value}
+      onChange={handleChange}
+      onKeyDown={handleKeyDown}
+      placeholder={placeholder}
+      disabled={disabled}
+      rows={1}
+      maxLength={250}
+      style={{ resize: 'none', overflow: 'hidden' }}
+    />
+  );
+};
+
 const VoiceButton = ({ isListening, isDisabled, onClick }) => {
   return (
     <button 
@@ -36,10 +80,8 @@ const Chat = () => {
   const silenceTimeoutRef = useRef(null); // Timer dla wykrywania ciszy
   const welcomeShown = useRef(false); // Ref dla wiadomości powitalnej
   
-  // Stała definiująca czas ciszy w milisekundach przed zatrzymaniem nagrywania
   const SILENCE_TIMEOUT = 2000; // 2 sekundy ciszy = zatrzymanie nagrywania
   
-  // Funkcja zatrzymująca nasłuchiwanie
   const stopListening = () => {
     if (recognitionRef.current) {
       try {
@@ -51,62 +93,52 @@ const Chat = () => {
     
     setIsListening(false);
     
-    // Wyczyść timeout
     if (silenceTimeoutRef.current) {
       clearTimeout(silenceTimeoutRef.current);
       silenceTimeoutRef.current = null;
     }
   };
   
-  // Sprawdzenie czy przeglądarka wspiera rozpoznawanie mowy
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       setIsSpeechSupported(true);
       
       const initRecognition = () => {
-        // Inicjalizacja obiektu rozpoznawania mowy
         recognitionRef.current = new SpeechRecognition();
-        recognitionRef.current.continuous = false; // Zmiana na false dla lepszego wykrywania ciszy
+        recognitionRef.current.continuous = false;
         recognitionRef.current.interimResults = true;
-        recognitionRef.current.lang = 'pl-PL'; // Ustawienie języka na polski
+        recognitionRef.current.lang = 'pl-PL';
         
-        // Obsługa wyniku rozpoznawania
         recognitionRef.current.onresult = (event) => {
           const transcript = Array.from(event.results)
             .map(result => result[0])
             .map(result => result.transcript)
             .join('');
           
-          // Aktualizacja pola tekstowego
           setNewMessage(transcript);
           setHasSpoken(true);
           
-          // Za każdym razem gdy otrzymamy wynik, resetujemy timer ciszy
           if (silenceTimeoutRef.current) {
             clearTimeout(silenceTimeoutRef.current);
           }
           
-          // Ustaw nowy timer ciszy
           silenceTimeoutRef.current = setTimeout(() => {
             console.log("Wykryto ciszę - zatrzymywanie nagrywania");
             stopListening();
           }, SILENCE_TIMEOUT);
         };
         
-        // Obsługa błędów
         recognitionRef.current.onerror = (event) => {
           console.error('Błąd rozpoznawania mowy:', event.error);
           
           if (event.error === 'not-allowed') {
             setError("Dostęp do mikrofonu został zablokowany. Sprawdź ustawienia przeglądarki.");
           } else if (event.error === 'no-speech') {
-            // Zamiast ustawiać błąd, po prostu restartujemy nasłuchiwanie
             console.log("Nie wykryto mowy, restartuję nasłuchiwanie...");
             if (isListening) {
               try {
                 recognitionRef.current.stop();
-                // Dajemy przeglądarce chwilę na reset
                 setTimeout(() => {
                   if (isListening) {
                     try {
@@ -127,12 +159,9 @@ const Chat = () => {
           setIsListening(false);
         };
         
-        // Zatrzymanie nasłuchiwania po zakończeniu
         recognitionRef.current.onend = () => {
           console.log("Rozpoznawanie mowy zakończone");
           
-          // Jeśli użytkownik nic nie powiedział, ale nasłuchiwanie jest nadal aktywne
-          // to restartujemy nasłuchiwanie
           if (isListening && !hasSpoken) {
             console.log("Restart nasłuchiwania po automatycznym zakończeniu");
             try {
@@ -151,12 +180,9 @@ const Chat = () => {
               setIsListening(false);
             }
           } else {
-            // Zakończ nasłuchiwanie tylko jeśli użytkownik coś powiedział
-            // lub jeśli ręcznie wyłączono nasłuchiwanie
             setIsListening(false);
           }
           
-          // Wyczyść timer ciszy
           if (silenceTimeoutRef.current) {
             clearTimeout(silenceTimeoutRef.current);
             silenceTimeoutRef.current = null;
@@ -167,13 +193,11 @@ const Chat = () => {
       initRecognition();
     }
     
-    // Czyszczenie zasobów przy odmontowaniu komponentu
     return () => {
       stopListening();
     };
   }, []);
   
-  // Automatyczne przewijanie do najnowszej wiadomości
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -181,20 +205,16 @@ const Chat = () => {
   }, [messages]);
   
   useEffect(() => {
-    // Funkcja sprawdzająca, czy mamy wystarczająco miejsca na wiadomość powitalną
     const checkScreenSpace = () => {
-      // Nie pokazujemy powitania na bardzo małych ekranach lub gdy menu jest otwarte
       if (window.innerWidth < 320 || document.body.classList.contains('menu-open')) {
         setShowWelcome(false);
         return;
       }
 
-      // Automatyczne pokazanie powitania przy pierwszym renderze
       if (!welcomeShown.current) {
         setShowWelcome(true);
         welcomeShown.current = true;
 
-        // Autoukrywanie wiadomości po 5 sekundach
         const hideTimer = setTimeout(() => {
           setShowWelcome(false);
         }, 5000);
@@ -205,7 +225,6 @@ const Chat = () => {
 
     const timer = setTimeout(checkScreenSpace, 1000);
 
-    // Sprawdzaj również przy zmianie rozmiaru okna
     window.addEventListener('resize', checkScreenSpace);
 
     return () => {
@@ -214,10 +233,8 @@ const Chat = () => {
     };
   }, []);
   
-  // Efekt obsługujący zmianę stanu słuchania
   useEffect(() => {
     if (!isListening) {
-      // Zatrzymaj timer ciszy gdy słuchanie jest wyłączone
       if (silenceTimeoutRef.current) {
         clearTimeout(silenceTimeoutRef.current);
         silenceTimeoutRef.current = null;
@@ -225,15 +242,22 @@ const Chat = () => {
     }
   }, [isListening]);
   
-  const welcomeText = window.innerWidth > 400 
-    ? "Hej, jestem Julia AI asystentem LuxMed! Masz jakieś pytanie?" 
-    : "Potrzebujesz pomocy? Kliknij tutaj!";
+  useEffect(() => {
+    if (isListening) {
+      console.log("Nasłuchiwanie rozpoczęte - fale powinny być aktywne");
+      const waves = document.querySelectorAll('.sound-wave');
+      waves.forEach(wave => {
+        void wave.offsetHeight;
+      });
+    } else {
+      console.log("Nasłuchiwanie zatrzymane - fale powinny zniknąć");
+    }
+  }, [hasSpoken, isListening]);
   
   useEffect(() => {
     if (isChatOpen) {
-      setShowWelcome(false); // Ukryj powitanie po otwarciu czatu
+      setShowWelcome(false);
       if (messages.length === 0) {
-        // Dodaj powitalną wiadomość w czacie
         setMessages([{
           id: 1,
           text: "Hej, jestem wirtualnym asystentem LuxMed! Jak mogę Ci pomóc?",
@@ -242,19 +266,17 @@ const Chat = () => {
         }]);
       }
     }
-  }, [isChatOpen]);
+  }, [isChatOpen, messages.length]);
 
   const toggleChat = () => {
     setIsChatOpen(!isChatOpen);
-    setError(null); // Resetujemy błędy przy zamknięciu/otwarciu czatu
+    setError(null);
     
-    // Zatrzymujemy nasłuchiwanie głosu przy zamknięciu czatu
     if (!isChatOpen === false && isListening) {
       stopListening();
     }
   };
   
-  // Funkcja przełączająca nasłuchiwanie głosu
   const toggleVoiceRecognition = () => {
     if (!isSpeechSupported) {
       setError("Twoja przeglądarka nie wspiera rozpoznawania mowy.");
@@ -262,26 +284,21 @@ const Chat = () => {
     }
     
     if (isListening) {
-      // Zatrzymanie nagrywania
       stopListening();
     } else {
       try {
-        // Reset flagi mówiącej
         setHasSpoken(false);
         
-        // Rozpoczęcie nagrywania
         recognitionRef.current.start();
         setIsListening(true);
         setError(null);
         
-        // Ustaw timer bezpieczeństwa - zatrzyma nagrywanie po czasie,
-        // jeśli nic nie wykryto i nie zadziałały inne mechanizmy
         silenceTimeoutRef.current = setTimeout(() => {
           if (isListening) {
             console.log("Zatrzymanie nagrywania przez timer bezpieczeństwa");
             stopListening();
           }
-        }, SILENCE_TIMEOUT * 2); // Dwa razy dłuższy czas na początkową wypowiedź
+        }, SILENCE_TIMEOUT * 2);
       } catch (err) {
         console.error('Błąd podczas uruchamiania rozpoznawania mowy:', err);
         setError("Błąd podczas uruchamiania rozpoznawania mowy. Spróbuj ponownie.");
@@ -291,15 +308,13 @@ const Chat = () => {
   };
   
   const handleSendMessage = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (newMessage.trim() === "" || isTyping) return;
     
-    // Zatrzymaj nasłuchiwanie jeśli jest aktywne
     if (isListening) {
       stopListening();
     }
     
-    // Dodajemy wiadomość użytkownika
     const userMessage = {
       id: messages.length + 1,
       text: newMessage,
@@ -308,18 +323,16 @@ const Chat = () => {
     };
     
     setMessages(prev => [...prev, userMessage]);
-    const questionText = newMessage.trim(); // Zapisujemy tekst pytania
-    setNewMessage(""); // Czyścimy pole tekstowe
-    setIsTyping(true); // Pokazujemy indykator ładowania
-    setError(null); // Resetujemy błąd
+    const questionText = newMessage.trim();
+    setNewMessage("");
+    setIsTyping(true);
+    setError(null);
     
     try {
-      // Wysyłamy pytanie do API i czekamy na odpowiedź
       const answer = await askQuestion(questionText);
       
-      // Dodajemy odpowiedź bota
       const botMessage = {
-        id: Date.now(), // Używamy timestampa jako ID dla unikalności
+        id: Date.now(),
         text: answer,
         sender: "bot",
         timestamp: new Date()
@@ -338,24 +351,8 @@ const Chat = () => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
   
-  // Efekt pomocniczy dla debugowania animacji
-  useEffect(() => {
-    // Ten efekt pomoże z debugowaniem animacji fal
-    if (isListening) {
-      console.log("Nasłuchiwanie rozpoczęte - fale powinny być aktywne");
-      // Możemy też wymusić reflow dla lepszej animacji
-      const waves = document.querySelectorAll('.sound-wave');
-      waves.forEach(wave => {
-        void wave.offsetHeight; // Trigger reflow
-      });
-    } else {
-      console.log("Nasłuchiwanie zatrzymane - fale powinny zniknąć");
-    }
-  }, [isListening]);
-  
   return (
     <>
-      {/* Przycisk czatu ze zdjęciem Julii */}
       <button 
         className={`chat-button ${isChatOpen ? 'chat-button-hidden' : ''}`}
         onClick={toggleChat}
@@ -368,14 +365,13 @@ const Chat = () => {
           <img src="/images/Julia.webp" 
             alt="Julia AI" 
             style={{
-              opacity: '0.9', // Lekka przezroczystość zdjęcia
-              filter: 'contrast(1.1) brightness(1.05)' // Poprawa jakości zdjęcia
+              opacity: '0.9',
+              filter: 'contrast(1.1) brightness(1.05)'
             }}
           />
         </div>
       </button>
       
-      {/* Wyskakująca wiadomość powitalna */}
       {showWelcome && !isChatOpen && (
         <div className="welcome-message">
           {window.innerWidth > 400 
@@ -383,8 +379,7 @@ const Chat = () => {
             : "Potrzebujesz pomocy? Kliknij tutaj!"}
         </div>
       )}
-
-      {/* Okno czatu */}
+        
       {isChatOpen && (
         <div className="chat-window">
           <div className="chat-header">
@@ -394,8 +389,8 @@ const Chat = () => {
                   src="/images/Julia.webp" 
                   alt="Konsultant LuxMed"
                   style={{
-                    opacity: '0.9', // Lekka przezroczystość zdjęcia
-                    filter: 'contrast(1.1) brightness(1.05)' // Poprawa jakości zdjęcia
+                    opacity: '0.9',
+                    filter: 'contrast(1.1) brightness(1.05)'
                   }}
                 />
               </div>
@@ -456,7 +451,6 @@ const Chat = () => {
               <div ref={messagesEndRef} />
             </div>
             
-            {/* Kontener na fale dźwiękowe z płynnym zanikaniem */}
             <div className={`sound-waves-container ${isListening ? 'waves-active' : 'waves-inactive'}`}>
               <div className="sound-wave"></div>
               <div className="sound-wave"></div>
@@ -465,25 +459,22 @@ const Chat = () => {
               <div className="sound-wave"></div>
             </div>
             
-            {/* Absolutnie pozycjonowany przezroczysty disclaimer medyczny */}
             <div className="medical-disclaimer-container">
               <div className="medical-disclaimer">
-                Wyświetlane wiadomości nie stanowią porady medycznej. W razie problemów zdrowotnych skontaktuj się z lekarzem.
+                Wyświetlane wiadomości są generowane przez AI i nie stanowią porady medycznej. W razie problemów zdrowotnych skontaktuj się z lekarzem. Wiadomośći mogą być zapoisane w celach analitycznych.
               </div>
             </div>
           </div>
           
           <form onSubmit={handleSendMessage} className="chat-input-form">
-            <input 
-              type="text" 
+            <AutoResizeTextarea
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Wpisz wiadomość lub kliknij mikrofon, aby mówić..." 
-              className="chat-input"
+              placeholder="Wpisz wiadomość lub kliknij mikrofon, aby mówić..."
               disabled={isTyping}
+              onEnter={handleSendMessage}
             />
             
-            {/* Przycisk mikrofonu */}
             {isSpeechSupported && (
               <VoiceButton 
                 isListening={isListening}

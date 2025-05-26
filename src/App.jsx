@@ -30,6 +30,11 @@ const App = () => {
       image: "/images/chatbot.jpg", // Lokalna ścieżka do obrazu
       title: "NOWOŚĆ! Chatbot LuxMed",
       description: "Teraz możesz szybko uzyskać pomoc i informacje poprzez naszego inteligentnego asystenta"
+    },
+    {
+      image: "/images/julia-documentation.jpg", // Nowy obraz dla slajdu PDF
+      title: "Dowiedz się więcej jak powstała Julia",
+      description: "Poznaj szczegóły procesu wdrożenia naszego medycznego chatbota - pobierz dokumentację PDF"
     }
   ];
 

@@ -1,134 +1,313 @@
-.new-badge {
-    background-color: #ff5e5e;
-    color: white;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 18px;
-    margin-right: 10px;
-    display: inline-block;
-    transform: rotate(-5deg);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  }/* styles/Carousel.css */
-  .carousel {
-    position: relative;
-    overflow: hidden;
-    height: 500px;
-    width: 100vw; /* Zajmuje pełną szerokość widoku */
-    max-width: 100%; /* Nie przekracza szerokości ekranu */
-  }
-  
-  .carousel-inner {
-    display: flex;
-    transition: transform 0.8s ease-in-out; /* Płynniejsza animacja */
-    height: 100%;
-  }
-  
+/* styles/Carousel.css */
+.carousel {
+  position: relative;
+  overflow: hidden;
+  height: 500px;
+  width: 100vw; /* Zajmuje pełną szerokość widoku */
+  max-width: 100%; /* Nie przekracza szerokości ekranu */
+  background-color: #000; /* Czarne tło dla lepszego kontrastu */
+}
+
+.carousel-inner {
+  display: flex;
+  transition: transform 0.8s ease-in-out;
+  height: 100%;
+}
+
+.carousel-slide {
+  min-width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s ease-in-out;
+  filter: brightness(0.7); /* Przyciemnienie obrazu dla lepszej czytelności tekstu */
+}
+
+/* Poprawka: na dużych ekranach grafiki nie są ucięte, mają miejsce z lewej dla tekstów */
+@media (min-width: 992px) {
   .carousel-slide {
-    min-width: 100%;
     position: relative;
   }
   
   .carousel-image {
-    width: 100%;
-    height: 100%;
     object-fit: cover;
-    object-position: center; /* Wyśrodkowanie obrazu */
+    object-position: center center; /* Centrum dla najlepszego kadru */
+    height: 100%;
+    width: calc(100% - 100px); /* Zostaw 400px miejsca z lewej */
+    margin-left: 100px; /* Przesuń obraz w prawo */
+    transition: all 0.3s ease; /* Płynne przejście */
+    
+    /* Subtelny blur na lewej krawędzi */
+    mask: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.3) 15px, rgba(0,0,0,1) 30px);
+    -webkit-mask: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.3) 15px, rgba(0,0,0,1) 30px);
   }
   
   .carousel-content {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.6); /* Zwiększony kontrast tła */
-    color: #ffffff;
-    padding: 20px;
+    background: linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.2) 80%, rgba(0,0,0,0) 100%);
+  }
+}
+
+/* Przejście dla średnich-dużych ekranów */
+@media (min-width: 1200px) {
+  .carousel-image {
+    width: calc(100% - 200px);
+    margin-left: 200px;
+  
+  }
+}
+
+/* Na bardzo szerokich ekranach zwiększamy miejsce z lewej */
+@media (min-width: 1400px) {
+  .carousel-image {
+    width: calc(100% - 350px); /* Zostaw 600px miejsca z lewej */
+    margin-left: 350px; /* Przesuń obraz w prawo */
+  }
+}
+
+/* Na ultra szerokich ekranach jeszcze więcej miejsca */
+@media (min-width: 1800px) {
+  .carousel-image {
+    width: calc(100% - 600px); /* Zostaw 700px miejsca z lewej */
+    margin-left: 600px; /* Przesuń obraz w prawo */
+  }
+}
+/* Na ultra szerokich ekranach jeszcze więcej miejsca */
+@media (min-width: 2400px) {
+  .carousel-image {
+    width: calc(100% - 1500px); /* Zostaw 700px miejsca z lewej */
+    margin-left: 1500px; /* Przesuń obraz w prawo */
+  }
+}
+.carousel-slide:hover .carousel-image {
+  transform: scale(1.05); /* Lekkie powiększenie przy najechaniu */
+}
+
+.carousel-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start; /* Wyrównanie do lewej jak w LuxMed */
+  text-align: left;
+  background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 60%, rgba(0,0,0,0) 100%); /* Gradient od lewej do prawej */
+  color: #ffffff;
+  padding: 0;
+}
+
+.carousel-text-container {
+  max-width: 50%;
+  padding-left: 10%;
+}
+
+.carousel-title {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+  line-height: 1.2;
+}
+
+.carousel-description {
+  font-size: 20px;
+  max-width: 600px;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+  line-height: 1.4;
+}
+
+.new-badge {
+  background-color: #ff5e5e;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 18px;
+  margin-right: 10px;
+  display: inline-block;
+  transform: rotate(-5deg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.pdf-badge {
+  font-size: 24px;
+  margin-right: 10px;
+  display: inline-block;
+  background-color: #0066cc;
+  padding: 8px 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.chatbot-title, .pdf-title {
+  color: #fff;
+  font-weight: 700;
+}
+
+.pdf-download-hint {
+  margin-top: 15px;
+  padding: 10px 15px;
+  background-color: rgba(0, 102, 204, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 102, 204, 0.4);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  color: #ffffff;
+  animation: pulse 2s infinite;
+}
+
+.download-icon {
+  font-size: 20px;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.8; }
+  50% { opacity: 1; }
+  100% { opacity: 0.8; }
+}
+
+/* Style dla przycisków kontrolnych - wygląd jak w LuxMed */
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  
+  filter: invert(95%);
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 30%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+  color: #333;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  opacity: 0.8;
+}
+
+.carousel-control:hover {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+.carousel-control-prev {
+  left: 20px;
+}
+
+.carousel-control-next {
+  right: 20px;
+}
+
+.carousel-indicators {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.carousel-indicator {
+  width: 8px;
+  height: 2px;
+  border-radius: 25%;
+  background-color: #d1d1d1;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  opacity: 0.3;
+}
+
+.carousel-indicator:hover {
+  opacity: 0.8;
+}
+
+.carousel-indicator.active {
+  background-color: #ffffff;
+  opacity: 1;
+  transform: scale(1.2);
+  box-shadow: 0 1px 5px rgba(255, 255, 255, 0.5);
+}
+
+/* Media Queries */
+@media (max-width: 992px) {
+  .carousel-text-container {
+    max-width: 70%;
   }
   
   .carousel-title {
     font-size: 36px;
-    font-weight: 700;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8); /* Mocniejszy cień tekstu */
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel {
+    height: 400px;
+  }
+  
+  .carousel-text-container {
+    max-width: 80%;
+    padding-left: 5%;
+  }
+  
+  .carousel-title {
+    font-size: 28px;
   }
   
   .carousel-description {
-    font-size: 18px;
-    max-width: 600px;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); /* Mocniejszy cień tekstu */
+    font-size: 16px;
   }
   
   .carousel-control {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(255, 255, 255, 0.6);
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    z-index: 10;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+
+  .pdf-download-hint {
+    font-size: 14px;
+    padding: 8px 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .carousel {
+    height: 350px;
   }
   
-  .carousel-control:hover {
-    background-color: rgba(255, 255, 255, 0.9);
+  .carousel-text-container {
+    max-width: 90%;
   }
   
-  .carousel-control-prev {
-    left: 20px;
+  .carousel-title {
+    font-size: 24px;
+    margin-bottom: 10px;
   }
   
-  .carousel-control-next {
-    right: 20px;
+  .carousel-description {
+    font-size: 14px;
   }
-  
-  .carousel-indicators {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 10px;
-    z-index: 10;
+
+  .pdf-download-hint {
+    font-size: 12px;
+    padding: 6px 10px;
   }
-  
-  .carousel-indicator {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.5);
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .carousel-indicator.active {
-    background-color: #ffffff;
-  }
-  
-  /* Media Queries */
-  @media (max-width: 768px) {
-    .carousel {
-      height: 350px;
-    }
-    
-    .carousel-title {
-      font-size: 28px;
-    }
-    
-    .carousel-description {
-      font-size: 16px;
-    }
-  }
+}
