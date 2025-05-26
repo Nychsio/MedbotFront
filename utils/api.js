@@ -9,11 +9,15 @@ export const askQuestion = async (question) => {
     try {
       console.log('Wysyłanie pytania do API:', question);
       
+      // Pobierz URL API z pliku .env (z fallbackiem na stary URL)
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000';
+      console.log('URL API z .env:', apiUrl);
+      
       // Używamy obu metod - bezpośredniej i przez proxy
       let response;
       try {
         console.log('Próba bezpośredniego połączenia...');
-        response = await fetch('http://127.0.0.1:5000/ask', {
+        response = await fetch(`${apiUrl}/ask`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
